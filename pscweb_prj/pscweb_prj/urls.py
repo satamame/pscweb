@@ -22,5 +22,6 @@ urlpatterns = [
     path('', profile, name='root'),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    # 上の include については、「Djangoの認証システムを使用する」参照
     path('admin/', admin.site.urls),
 ]
