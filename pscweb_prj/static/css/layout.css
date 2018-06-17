@@ -1,6 +1,6 @@
 header {
-    height: 50px;
-    width: 100%;
+    height: 30px;
+    padding: 10px;
     position: fixed; /* ヘッダーを固定 */
     top: 0; /* 固定する位置 */
     left: 0; /* 固定する位置 */
@@ -33,4 +33,9 @@ header nav {
 
 header ul li {
     display: inline;
+}
+
+div.content{
+    margin: 50px 0px 0px;
+    padding: 10px;
 }

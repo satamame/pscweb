@@ -19,7 +19,10 @@ User = get_user_model()
 
 @login_required
 def profile(request):
-    return HttpResponse("Hello, {}.".format(request.user.username))
+    context = {
+        'user': request.user.username,
+    }
+    return render(request, 'accounts/profile.html', context)
 
 
 class SignUpView(generic.CreateView):
