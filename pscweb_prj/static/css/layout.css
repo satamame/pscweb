@@ -1,0 +1,36 @@
+header {
+    height: 50px;
+    width: 100%;
+    position: fixed; /* ヘッダーを固定 */
+    top: 0; /* 固定する位置 */
+    left: 0; /* 固定する位置 */
+    right: 0;  /* 固定する位置 */
+    color: rgb(255, 255, 204);
+    background: rgb(65, 118, 144);
+}
+
+header a:link, header a:visited {
+    color: rgb(255, 255, 204);
+    text-decoration: none;
+}
+
+header a:focus, header a:hover {
+    color: aquamarine;
+}
+
+header a:focus {
+    text-decoration: underline;
+}
+
+header .site-name {
+    font-size: 1.5em;
+    float: left;
+}
+
+header nav {
+    text-align: right;
+}
+
+header ul li {
+    display: inline;
+}
