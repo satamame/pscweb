@@ -20,7 +20,7 @@ User = get_user_model()
 @login_required
 def profile(request):
     context = {
-        'user': request.user.username,
+        'user': request.user,
     }
     return render(request, 'accounts/profile.html', context)
 
