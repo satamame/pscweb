@@ -31,8 +31,28 @@ def schedule(request, prod_id):
             data += '%s, %s<br>' % (row[0], row[4])
     """
 
+    table_data = [['日時', '場所', '人数']]
+    for i in range(1, len(values[0])):
+        data = [
+            values[0][i] + '\n' + values[1][i],
+            values[2][i] + '\n' + values[3][i]
+        ]
+        attend = 0
+        absent = 0
+        other = 0
+        for j in range(4, len(values)):
+            if values[j][i] in ['○', '◯']:
+                attend += 1
+            elif values[j][i] == '×':
+                absent += 1
+            else:
+                other += 1
+        data.append("○ : {0}人\n× : {1}人\n他 : {2}人".format(attend, absent, other))
+        table_data.append(data)
+
     context = {
-        'values': values,
+        'title': prod.title,
+        'values': table_data,
     }
     return render(request, 'gs_schdl/schedule.html', context)
 
