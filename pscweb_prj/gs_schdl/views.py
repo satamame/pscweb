@@ -1,8 +1,7 @@
 from django.shortcuts import render
+from django.views import generic
+from .models import Production
 
-def prods(request):
-    """
-    A view function
-    Shows index of productions
-    """
-    return render(request, 'gs_schdl/prods.html')
+class ProductionIndexView(generic.ListView):
+    model = Production
+    paginate_by = 10
