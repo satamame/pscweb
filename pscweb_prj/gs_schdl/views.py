@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
+from django.http import Http404
 from .models import Production
 
 import httplib2
@@ -18,9 +19,8 @@ class ProductionIndexView(generic.ListView):
 
 def schedule(request, prod_id):
     prod = get_object_or_404(Production, pk=prod_id)
-
-    values = get_sheet_values(prod.gs_id, 'Sheet1!A1:K')
-
+    values = get_sheet_values(prod.gs_id, 'Sheet1')
+    
     """
     if not values:
         data = 'No data found.'
@@ -31,30 +31,61 @@ def schedule(request, prod_id):
             data += '%s, %s<br>' % (row[0], row[4])
     """
 
-    table_data = [['日時', '場所', '人数']]
-    for i in range(1, len(values[0])):
+    values = list(zip(*values)) # Transpose
+    table_data = []
+    for row in values[1:]:
+        attend = row[4:].count('○') + row[4:].count('◯')
+        absent = row[4:].count('×')
+        other = len(row) - 4 - attend - absent
         data = [
-            values[0][i] + '\n' + values[1][i],
-            values[2][i] + '\n' + values[3][i]
+            row[0] + '\n' + row[1],
+            row[2] + '\n' + row[3],
+            "◯ : {0}人\n× : {1}人\n他 : {2}人".format(attend, absent, other)
         ]
-        attend = 0
-        absent = 0
-        other = 0
-        for j in range(4, len(values)):
-            if values[j][i] in ['○', '◯']:
-                attend += 1
-            elif values[j][i] == '×':
-                absent += 1
-            else:
-                other += 1
-        data.append("○ : {0}人\n× : {1}人\n他 : {2}人".format(attend, absent, other))
         table_data.append(data)
 
     context = {
-        'title': prod.title,
-        'values': table_data,
+        'production': prod,
+        'table_data': table_data,
     }
     return render(request, 'gs_schdl/schedule.html', context)
+
+
+def rehearsal(request, prod_id, rh_idx):
+    prod = get_object_or_404(Production, pk=prod_id)
+    values = get_sheet_values(prod.gs_id, 'Sheet1')
+    try:
+        table_data = [(row[0], row[1 + rh_idx]) for row in values[4:]]
+    except IndexError:
+        raise Http404
+
+    context = {
+        'production': prod,
+        'datetime': values[0][1 + rh_idx] + ' ' + values[1][1 + rh_idx],
+        'place': values[2][1 + rh_idx] + ' ' + values[3][1 + rh_idx],
+        'table_data': table_data,
+    }
+    return render(request, 'gs_schdl/rehearsal.html', context)
+
+
+def person(request, prod_id, ps_idx):
+    prod = get_object_or_404(Production, pk=prod_id)
+    values = get_sheet_values(prod.gs_id, 'Sheet1')
+    values = list(zip(*values)) # Transpose
+    try:
+        table_data = [
+            (row[0] + '\n' + row[1], row[4 + ps_idx])
+            for row in values[1:]
+        ]
+    except IndexError:
+        raise Http404
+
+    context = {
+        'production': prod,
+        'name': values[0][4 + ps_idx],
+        'table_data': table_data,
+    }
+    return render(request, 'gs_schdl/person.html', context)
 
 
 def get_sheet_values(sheet_id, range_name):

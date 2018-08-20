@@ -6,5 +6,10 @@ urlpatterns = [
     # ex: /gs_schdl/
     path('', views.ProductionIndexView.as_view(), name='prod_index'), # Index of productions
     # ex: /gs_schdl/0/
-    path('<int:prod_id>/', views.schedule, name='schedule'), # Schedule summary
+    path('<int:prod_id>/', views.schedule, name='schedule'), # Schedule summary for production
+    # ex: /gs_schdl/0/rh/0/
+    path('<int:prod_id>/rh/<int:rh_idx>/', views.rehearsal, name='rehearsal'), # One rehearsal
+    # ex: /gs_schdl/0/ps/0/
+    path('<int:prod_id>/ps/<int:ps_idx>/', views.person, name='person'), # One person
+
 ]

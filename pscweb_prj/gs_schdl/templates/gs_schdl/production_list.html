@@ -4,7 +4,7 @@
 <h1>Productions</h1>
 <ul>
     {% for item in object_list %}
-    <li>{{ item }}</li>
+    <li><a href="{% url 'gs_schdl:schedule' item.id %}">{{ item }}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}
