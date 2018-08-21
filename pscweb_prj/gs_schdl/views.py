@@ -31,7 +31,13 @@ def schedule(request, prod_id):
             data += '%s, %s<br>' % (row[0], row[4])
     """
 
-    values = list(zip(*values)) # Transpose
+    # Padding
+    maxlen = max(map(len, values))
+    values = [x + ['']*(maxlen-len(x)) for x in values]
+
+    # Transpose
+    values = list(zip(*values))
+    
     table_data = []
     for row in values[1:]:
         attend = row[4:].count('○') + row[4:].count('◯')
@@ -54,6 +60,12 @@ def schedule(request, prod_id):
 def rehearsal(request, prod_id, rh_idx):
     prod = get_object_or_404(Production, pk=prod_id)
     values = get_sheet_values(prod.gs_id, 'Sheet1')
+
+    # Padding
+    maxlen = max(map(len, values))
+    values = [x + ['']*(maxlen-len(x)) for x in values]
+
+    # Extract the rehearsal's data
     try:
         table_data = [(row[0], row[1 + rh_idx]) for row in values[4:]]
     except IndexError:
@@ -71,7 +83,15 @@ def rehearsal(request, prod_id, rh_idx):
 def person(request, prod_id, ps_idx):
     prod = get_object_or_404(Production, pk=prod_id)
     values = get_sheet_values(prod.gs_id, 'Sheet1')
-    values = list(zip(*values)) # Transpose
+
+    # Padding
+    maxlen = max(map(len, values))
+    values = [x + ['']*(maxlen-len(x)) for x in values]
+
+    # Transpose
+    values = list(zip(*values))
+    
+    # Extract the person's data
     try:
         table_data = [
             (row[0] + '\n' + row[1], row[4 + ps_idx])
