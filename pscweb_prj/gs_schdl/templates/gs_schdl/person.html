@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% block header %}
+<a class="site-name" href="{% url 'gs_schdl:prod_index' %}">GSS</a>
+<nav><a href="{% url 'gs_schdl:schedule' production.id %}">{{ production.title }}</a></nav>
+{% endblock %}
 
 {% block content %}
 <h1>{{ name }}</h1>

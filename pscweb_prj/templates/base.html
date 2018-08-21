@@ -16,6 +16,7 @@
 <body>
 <div class="container">
     <header>
+        {% block header %}
         <a class="site-name" href="{% url 'root' %}">PSCWEB</a>
         <nav>
             <ul>
@@ -30,6 +31,7 @@
                 {% endif %}
             </ul>
         </nav>
+        {% endblock %}
     </header>
     <div class="content">
         {% block content %}{% endblock %}
