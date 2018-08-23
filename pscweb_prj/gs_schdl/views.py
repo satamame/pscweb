@@ -80,8 +80,14 @@ def rehearsal(request, prod_id, rh_idx):
     return render(request, 'gs_schdl/rehearsal.html', context)
 
 
-def person(request, prod_id, ps_idx):
+def person(request, prod_id):
     prod = get_object_or_404(Production, pk=prod_id)
+    
+    try:
+        ps_idx = int(request.GET.get('idx')) # person's index in sheet
+    except:
+        raise Http404
+
     values = get_sheet_values(prod.gs_id, 'Sheet1')
 
     # Padding
