@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.http import Http404
-from .models import Production
+from .models import Production, Member
 
 import httplib2
 import os
@@ -17,19 +17,18 @@ class ProductionIndexView(generic.ListView):
     paginate_by = 10
 
 
+class MemberListView(generic.ListView):
+    def get_queryset(self):
+        return Member.objects.filter(prod_id=self.kwargs['prod_id'])
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['production'] = Production.objects.get(pk=self.kwargs['prod_id'])
+        return context
+
 def schedule(request, prod_id):
     prod = get_object_or_404(Production, pk=prod_id)
     values = get_sheet_values(prod.gs_id, 'Sheet1')
-    
-    """
-    if not values:
-        data = 'No data found.'
-    else:
-        data = 'Name, Major:'
-        for row in values:
-            # Print columns A and E, which correspond to indices 0 and 4.
-            data += '%s, %s<br>' % (row[0], row[4])
-    """
 
     # Padding
     maxlen = max(map(len, values))
@@ -80,12 +79,12 @@ def rehearsal(request, prod_id, rh_idx):
     return render(request, 'gs_schdl/rehearsal.html', context)
 
 
-def person(request, prod_id):
+def member(request, prod_id):
     prod = get_object_or_404(Production, pk=prod_id)
     
-    try:
-        ps_idx = int(request.GET.get('idx')) # person's index in sheet
-    except:
+    idx = request.GET.get('idx')
+    id = request.GET.get('id')
+    if not idx and not id:
         raise Http404
 
     values = get_sheet_values(prod.gs_id, 'Sheet1')
@@ -96,7 +95,17 @@ def person(request, prod_id):
 
     # Transpose
     values = list(zip(*values))
-    
+
+    # Get the person's index in sheet
+    if not idx:
+        try:
+            member = Member.objects.get(pk=int(id))
+            ps_idx = values[0].index(member.name) - 4
+        except ValueError:
+            raise Http404
+    else:
+        ps_idx = int(idx)
+
     # Extract the person's data
     try:
         table_data = [
@@ -111,7 +120,7 @@ def person(request, prod_id):
         'name': values[0][4 + ps_idx],
         'table_data': table_data,
     }
-    return render(request, 'gs_schdl/person.html', context)
+    return render(request, 'gs_schdl/member.html', context)
 
 
 def get_sheet_values(sheet_id, range_name):

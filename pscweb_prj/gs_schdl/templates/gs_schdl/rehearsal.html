@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block header %}
-<a class="site-name" href="{% url 'gs_schdl:prod_index' %}">GSS</a>
-<nav><a href="{% url 'gs_schdl:schedule' production.id %}">{{ production.title }}</a></nav>
+<a class="site-name" href="{% url 'gs_schdl:schedule' production.id %}">{{ production.title }}</a>
 {% endblock %}
 
 {% block content %}
@@ -10,7 +9,7 @@
 <table>
     {% for row in table_data %}
         <tr>
-            <td><a href="{% url 'gs_schdl:person' prod_id=production.id %}?idx={{ forloop.counter0 }}">{{ row.0 | linebreaksbr }}</a></td>
+            <td><a href="{% url 'gs_schdl:member' prod_id=production.id %}?idx={{ forloop.counter0 }}">{{ row.0 | linebreaksbr }}</a></td>
             <td>{{ row.1 | linebreaksbr }}</td>
         </tr>
     {% endfor %}
