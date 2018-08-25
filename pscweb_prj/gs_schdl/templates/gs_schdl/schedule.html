@@ -10,12 +10,24 @@
 {% block content %}
 <h1>{{ production.title }}</h1>
 <table>
-    <tr><td>日時</td><td>場所</td><td>人数</td></tr>
+    <tr>
+        <td>日時</td>
+        <td>場所</td>
+        {% for name in names %}
+            <td><a href="{% url 'gs_schdl:member' prod_id=production.id %}?idx={{ forloop.counter0 }}">{{ name }}</a></td>
+        {% endfor %}
+    </tr>
     {% for row in table_data %}
         <tr>
-            <td><a href="{% url 'gs_schdl:rehearsal' prod_id=production.id rh_idx=forloop.counter0 %}">{{ row.0 | linebreaksbr }}</a></td>
-            <td>{{ row.1 | linebreaksbr }}</td>
-            <td>{{ row.2 | linebreaksbr }}</td>
+        {% for data in row %}
+            {% if forloop.counter0 == 0 %}
+                <td><a href="{% url 'gs_schdl:rehearsal' prod_id=production.id rh_idx=forloop.counter0 %}">{{ data | linebreaksbr }}</a></td>
+            {% elif forloop.counter0 == 1 %}
+                <td>{{ data | linebreaksbr }}</td>
+            {% else %}
+                <td align="center">{{ data }}</td>
+            {% endif %}
+        {% endfor %}
         </tr>
     {% endfor %}
 </table>

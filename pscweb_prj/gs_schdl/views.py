@@ -37,20 +37,30 @@ def schedule(request, prod_id):
     # Transpose
     values = list(zip(*values))
     
+    # Member names
+    names = [s[0] for s in values[0][4:]]
+
     table_data = []
     for row in values[1:]:
-        attend = row[4:].count('○') + row[4:].count('◯')
-        absent = row[4:].count('×')
-        other = len(row) - 4 - attend - absent
-        data = [
-            row[0] + '\n' + row[1],
-            row[2] + '\n' + row[3],
-            "◯ : {0}人\n× : {1}人\n他 : {2}人".format(attend, absent, other)
-        ]
+        data = [row[0] + '\n' + row[1], row[2] + '\n' + row[3]]
+        for s in row[4:]:
+            if s.strip() == '':
+                data.append(' ')
+            elif s in ['○', '◯']:
+                data.append('○')
+            elif s == '×':
+                data.append('×')
+            elif s[0] in ['～', '-']:
+                data.append('▼')
+            elif s[-1] in ['～', '-']:
+                data.append('▲')
+            else:
+                data.append('*')
         table_data.append(data)
 
     context = {
         'production': prod,
+        'names': names,
         'table_data': table_data,
     }
     return render(request, 'gs_schdl/schedule.html', context)
