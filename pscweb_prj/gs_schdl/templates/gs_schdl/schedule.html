@@ -23,9 +23,9 @@
         <tr>
         {% for data in row %}
             {% if forloop.counter0 == 0 %}
-                <td><a href="{% url 'gs_schdl:rehearsal' prod_id=production.id rh_idx=forloop.counter0 %}">{{ data | linebreaksbr }}</a></td>
+                <td nowrap><a href="{% url 'gs_schdl:rehearsal' prod_id=production.id rh_idx=forloop.counter0 %}">{{ data | linebreaksbr }}</a></td>
             {% elif forloop.counter0 == 1 %}
-                <td>{{ data | linebreaksbr }}</td>
+                <td nowrap>{{ data | linebreaksbr }}</td>
             {% else %}
                 <td align="center">{{ data }}</td>
             {% endif %}
