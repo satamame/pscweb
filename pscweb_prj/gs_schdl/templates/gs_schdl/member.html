@@ -8,8 +8,8 @@
 <table>
     {% for row in table_data %}
         <tr>
-            <td><a href="{% url 'gs_schdl:rehearsal' prod_id=production.id rh_idx=forloop.counter0 %}">{{ row.0 | linebreaksbr }}</a></td>
-            <td>{{ row.1 | linebreaksbr }}</td>
+            <td nowrap><a href="{% url 'gs_schdl:rehearsal' prod_id=production.id rh_idx=forloop.counter0 %}">{{ row.0 | linebreaksbr }}</a></td>
+            <td nowrap>{{ row.1 | linebreaksbr }}</td>
         </tr>
     {% endfor %}
 </table>

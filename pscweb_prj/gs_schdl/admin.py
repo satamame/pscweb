@@ -5,6 +5,10 @@ class MemberAdmin(admin.ModelAdmin):
     list_display = ('name', 'prod_id')
     list_filter = ['prod_id']
 
+class TeamAdmin(admin.ModelAdmin):
+    list_display = ('name', 'prod_id')
+    list_filter = ['prod_id']
+
 admin.site.register(Production)
 admin.site.register(Member, MemberAdmin)
-admin.site.register(Team)
+admin.site.register(Team, TeamAdmin)

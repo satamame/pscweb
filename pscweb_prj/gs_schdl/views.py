@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.http import Http404
-from .models import Production, Member
+from .models import Production, Member, Team
 
 import httplib2
 import os
@@ -25,6 +25,17 @@ class MemberListView(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['production'] = Production.objects.get(pk=self.kwargs['prod_id'])
         return context
+
+
+class TeamListView(generic.ListView):
+    def get_queryset(self):
+        return Team.objects.filter(prod_id=self.kwargs['prod_id'])
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['production'] = Production.objects.get(pk=self.kwargs['prod_id'])
+        return context
+
 
 def schedule(request, prod_id):
     prod = get_object_or_404(Production, pk=prod_id)
@@ -103,6 +114,9 @@ def member(request, prod_id):
     maxlen = max(map(len, values))
     values = [x + ['']*(maxlen-len(x)) for x in values]
 
+    # TODO
+    # Transpose する前にフィルタする事で、処理が簡潔になるはず。
+
     # Transpose
     values = list(zip(*values))
 
@@ -131,6 +145,43 @@ def member(request, prod_id):
         'table_data': table_data,
     }
     return render(request, 'gs_schdl/member.html', context)
+
+
+def team(request, prod_id, team_id):
+    prod = get_object_or_404(Production, pk=prod_id)
+    team = get_object_or_404(Team, pk=team_id)
+
+    values = get_sheet_values(prod.gs_id, 'Sheet1')
+
+    # Filter by members
+    mb_names = [m.name for m in team.members.all()]
+    values = values[:4] + [row for row in values[4:] if row[0] in mb_names]
+
+    # Sort Members
+    members = []
+    for row in values[4:]:
+        member = [m for m in team.members.all() if m.name == row[0]]
+        members.append(member[0])
+
+    # Padding
+    maxlen = max(map(len, values))
+    values = [x + ['']*(maxlen-len(x)) for x in values]
+
+    # Transpose
+    values = list(zip(*values))
+
+    table_data = [
+        [row[0] + '\n' + row[1]] + list(row[4:])
+        for row in values[1:]
+    ]
+
+    context = {
+        'production': prod,
+        'team': team,
+        'members': members,
+        'table_data': table_data,
+    }
+    return render(request, 'gs_schdl/team.html', context)
 
 
 def get_sheet_values(sheet_id, range_name):

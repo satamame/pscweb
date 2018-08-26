@@ -13,5 +13,9 @@ urlpatterns = [
     path('<int:prod_id>/mb/', views.member, name='member'), # One member
     # ex: /gs_schdl/0/mb_list/
     path('<int:prod_id>/mb_list/', views.MemberListView.as_view(), name='mb_list'), # Member list
+    # ex: /gs_schdl/0/tm/0/
+    path('<int:prod_id>/tm/<int:team_id>', views.team, name='team'), # One team
+    # ex: /gs_schdl/0/tm_list/
+    path('<int:prod_id>/tm_list/', views.TeamListView.as_view(), name='tm_list'), # Team list
 
 ]

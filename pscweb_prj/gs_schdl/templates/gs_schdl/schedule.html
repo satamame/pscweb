@@ -3,7 +3,7 @@
 <a class="site-name" href="{% url 'gs_schdl:prod_index' %}">GSS</a>
 <nav>
     <a href="{% url 'gs_schdl:mb_list' prod_id=production.id %}">人</a> |
-    <a>チーム</a>
+    <a href="{% url 'gs_schdl:tm_list' prod_id=production.id %}">チーム</a>
 </nav>
 {% endblock %}
 
