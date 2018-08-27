@@ -16,7 +16,7 @@
                 <th>日時</th>
                 <th>場所</th>
                 {% for name in names %}
-                    <th><a href="{% url 'gs_schdl:member' prod_id=production.id %}?idx={{ forloop.counter0 }}"><b>{{ name }}</b></a></th>
+                    <td align="center"><a href="{% url 'gs_schdl:member' prod_id=production.id %}?idx={{ forloop.counter0 }}"><b>{{ name }}</b></a></td>
                 {% endfor %}
             </tr>
         {% endif %}
