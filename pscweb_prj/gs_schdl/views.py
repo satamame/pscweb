@@ -5,6 +5,7 @@ from .models import Production, Member, Team
 
 import httplib2
 import os
+import unicodedata
 
 from apiclient import discovery
 from oauth2client import client
@@ -53,7 +54,10 @@ def schedule(request, prod_id):
 
     table_data = []
     for row in values[1:]:
-        data = [row[0] + '\n' + row[1], row[2] + '\n' + row[3]]
+        data = [
+            unicodedata.normalize('NFKC', row[0] + '\n' + row[1]),
+            unicodedata.normalize('NFKC', row[2] + '\n' + row[3])
+        ]
         for s in row[4:]:
             if s.strip() == '':
                 data.append(' ')
@@ -153,15 +157,17 @@ def team(request, prod_id, team_id):
 
     values = get_sheet_values(prod.gs_id, 'Sheet1')
 
-    # Filter by members
+    # Filter sheet by members
     mb_names = [m.name for m in team.members.all()]
     values = values[:4] + [row for row in values[4:] if row[0] in mb_names]
 
-    # Sort Members
+    # Sort Members with the order in the sheet
     members = []
     for row in values[4:]:
         member = [m for m in team.members.all() if m.name == row[0]]
-        members.append(member[0])
+        member = member[0]
+        member.name = member.name[:2]
+        members.append(member)
 
     # Padding
     maxlen = max(map(len, values))
@@ -170,8 +176,10 @@ def team(request, prod_id, team_id):
     # Transpose
     values = list(zip(*values))
 
+    # Normalize data part
     table_data = [
-        [row[0] + '\n' + row[1]] + list(row[4:])
+        [unicodedata.normalize('NFKC', row[0] + '\n' + row[1])]
+        + [unicodedata.normalize('NFKC', d) for d in row[4:]]
         for row in values[1:]
     ]
 
