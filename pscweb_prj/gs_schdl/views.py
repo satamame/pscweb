@@ -1,7 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
-from django.http import Http404
-from .models import Production, Member, Team
+from django.http import Http404, HttpResponseRedirect
+from django.template.response import TemplateResponse
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+
+from .models import Production, Member, Team, RhPlan
+from .forms import RhPlanForm
 
 import httplib2
 import os
@@ -32,6 +37,16 @@ class TeamListView(generic.ListView):
     def get_queryset(self):
         return Team.objects.filter(prod_id=self.kwargs['prod_id'])
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['production'] = Production.objects.get(pk=self.kwargs['prod_id'])
+        return context
+
+
+class RhPlanListView(generic.ListView):
+    def get_queryset(self):
+        return RhPlan.objects.filter(prod_id=self.kwargs['prod_id']).order_by('sort_key')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['production'] = Production.objects.get(pk=self.kwargs['prod_id'])
@@ -190,6 +205,37 @@ def team(request, prod_id, team_id):
         'table_data': table_data,
     }
     return render(request, 'gs_schdl/team.html', context)
+
+
+def rhplan(request, rhplan_id):
+    rhplan = get_object_or_404(RhPlan, pk=rhplan_id)
+
+    context = {
+        'user': request.user,
+        'production': rhplan.prod_id,
+        'rhplan': rhplan,
+    }
+    return render(request, 'gs_schdl/rhplan.html', context)
+
+
+@login_required
+def rp_edit(request, rhplan_id):
+    rhplan = get_object_or_404(RhPlan, pk=rhplan_id)
+
+    if request.method == 'POST':
+        form = RhPlanForm(request.POST, instance=rhplan)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('gs_schdl:rhplan', args=[rhplan.id]))
+    else:
+        form = RhPlanForm(instance=rhplan)
+    
+    context = {
+        'form': form,
+        'production': rhplan.prod_id,
+        'rhplan': rhplan,
+    }
+    return TemplateResponse(request, 'gs_schdl/rhplan_edit.html', context)
 
 
 def get_sheet_values(sheet_id, range_name):

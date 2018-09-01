@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block header %}
+<a class="site-name" href="{% url 'gs_schdl:schedule' production.id %}">{{ production.title }}</a>
+{% endblock %}
+
+{% block content %}
+<h1>{{ rhplan }}</h1>
+<form action ="{% url 'gs_schdl:rp_edit' rhplan.id %}" method ="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="btn btn-default" value="更新する"/>
+</form>
+{% endblock %}

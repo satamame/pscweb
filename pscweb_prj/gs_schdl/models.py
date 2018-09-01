@@ -24,3 +24,13 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+
+class RhPlan(models.Model):
+    prod_id = models.ForeignKey(Production, on_delete=models.CASCADE)
+    sort_key = models.IntegerField('Sort key', default=1)
+    datetime = models.CharField('Datetime string', max_length=255)
+    plan = models.TextField('Plan', blank=True)
+    log = models.TextField('Log', blank=True)
+
+    def __str__(self):
+        return self.datetime.replace(r'\\', ' ')
