@@ -4,6 +4,7 @@
 <nav>
     <a href="{% url 'gs_schdl:mb_list' prod_id=production.id %}">人</a> |
     <a href="{% url 'gs_schdl:tm_list' prod_id=production.id %}">チーム</a> |
+    <a href="{% url 'gs_schdl:rh_list' prod_id=production.id %}">日時</a> |
     <a href="{% url 'gs_schdl:rp_list' prod_id=production.id %}">プラン</a>
 </nav>
 {% endblock %}

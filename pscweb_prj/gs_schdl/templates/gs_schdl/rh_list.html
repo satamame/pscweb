@@ -2,17 +2,19 @@
 {% block header %}
 <a class="site-name" href="{% url 'gs_schdl:schedule' production.id %}">{{ production.title }}</a>
 <nav>
+    <a href="{% url 'gs_schdl:mb_list' prod_id=production.id %}">人</a> |
     <a href="{% url 'gs_schdl:tm_list' prod_id=production.id %}">チーム</a> |
-    <a href="{% url 'gs_schdl:rh_list' prod_id=production.id %}">日時</a> |
     <a href="{% url 'gs_schdl:rp_list' prod_id=production.id %}">プラン</a>
 </nav>
 {% endblock %}
 
 {% block content %}
-<h1>Members</h1>
-<ul>
+<h1>Rehearsals</h1>
+<table>
     {% for item in object_list %}
-    <li><a href="{% url 'gs_schdl:member' prod_id=production.id %}?id={{ item.id }}">{{ item.name }}</a></li>
+        <tr>
+            <td><a href="{% url 'gs_schdl:rh_teams' rhplan_id=item.id %}">{{ item }}</a></td>
+        </tr>
     {% endfor %}
-</ul>
+</table>
 {% endblock %}

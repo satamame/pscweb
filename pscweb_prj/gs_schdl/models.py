@@ -13,7 +13,7 @@ class Member(models.Model):
     name = models.CharField('Name of member', max_length=255)
 
     def __str__(self):
-        return self.name
+        return ":".join([self.prod_id.title, self.name])
 
 
 class Team(models.Model):

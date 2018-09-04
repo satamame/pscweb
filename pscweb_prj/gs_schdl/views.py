@@ -43,6 +43,18 @@ class TeamListView(generic.ListView):
         return context
 
 
+class RhListView(generic.ListView):
+    template_name = "gs_schdl/rh_list.html"
+    
+    def get_queryset(self):
+        return RhPlan.objects.filter(prod_id=self.kwargs['prod_id']).order_by('sort_key')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['production'] = Production.objects.get(pk=self.kwargs['prod_id'])
+        return context
+
+
 class RhPlanListView(generic.ListView):
     def get_queryset(self):
         return RhPlan.objects.filter(prod_id=self.kwargs['prod_id']).order_by('sort_key')
@@ -205,6 +217,62 @@ def team(request, prod_id, team_id):
         'table_data': table_data,
     }
     return render(request, 'gs_schdl/team.html', context)
+
+
+def rh_teams(request, rhplan_id):
+    rhplan = get_object_or_404(RhPlan, pk=rhplan_id)
+    teams = Team.objects.filter(prod_id=rhplan.prod_id.id)
+    members = Member.objects.filter(prod_id=rhplan.prod_id.id)
+
+    values = get_sheet_values(rhplan.prod_id.gs_id, 'Sheet1')
+
+    # Datetime strings from row 1 and row 2
+    dt_row = [x + r'\\' + y for (x, y) in zip(values[0], values[1])]
+    dt_row = [unicodedata.normalize('NFKC', r) for r in dt_row]
+    
+    # Get column number (in values) for the datetime
+    col = dt_row.index(rhplan.datetime)
+
+    # Make list of members' status
+    mb_status = []
+    for member in members:
+        rows = [r for r in values[4:] if r[0] == member.name]
+        if rows:
+            st = rows[0][col]
+            mb_status.append({
+                'id': member.id,
+                'name': member.name,
+                'status': unicodedata.normalize('NFKC', st)
+            })
+
+    # Status per team
+    table_data = []
+    for team in teams:
+        mb_ids = [m.id for m in team.members.all()]
+        
+        ok_cnt = 0
+        other_st = []
+        for mb_st in [s for s in mb_status if s['id'] in mb_ids]:
+            if mb_st['status'] in ['○', '◯']:
+                ok_cnt += 1
+            else:
+                other_st.append(
+                    mb_st['name'][:2] + '(' + mb_st['status'] + ')'
+                )
+        
+        table_data.append({
+            'id': team.id,
+            'name': team.name,
+            'ok_cnt': '{0}/{1}'.format(ok_cnt, len(mb_ids)),
+            'other_st': ', '.join(other_st)
+        })
+
+    context = {
+        'production': rhplan.prod_id,
+        'rhplan': rhplan,
+        'table_data': table_data,
+    }
+    return render(request, 'gs_schdl/rh_teams.html', context)
 
 
 def rhplan(request, rhplan_id):
