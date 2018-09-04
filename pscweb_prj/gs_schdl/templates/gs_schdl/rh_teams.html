@@ -9,7 +9,7 @@
 <table>
     {% for item in table_data %}
         <tr>
-            <td><a href="{% url 'gs_schdl:team' prod_id=production.id team_id=item.id %}">{{ item.name }}</a></td>
+            <td nowrap><a href="{% url 'gs_schdl:team' prod_id=production.id team_id=item.id %}">{{ item.name }}</a></td>
             <td>{{ item.ok_cnt}}</td><td>{{ item.other_st }}</td>
         </tr>
     {% endfor %}
