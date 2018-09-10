@@ -34,8 +34,20 @@ class MemberListView(generic.ListView):
 
 
 class TeamListView(generic.ListView):
+    """
+    View for team list.
+    If "mbid" Get parameter is specified, only teams with the member will show.
+    """
     def get_queryset(self):
-        return Team.objects.filter(prod_id=self.kwargs['prod_id'])
+        prod_id=self.kwargs['prod_id']
+        mbid = self.request.GET.get('mbid')
+
+        if mbid:
+            queryset = Team.objects.filter(prod_id=prod_id, members=mbid)
+        else:
+            queryset = Team.objects.filter(prod_id=prod_id)
+
+        return queryset
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -132,6 +144,10 @@ def rehearsal(request, prod_id, rh_idx):
 
 
 def member(request, prod_id):
+    """
+    View of a member.
+    id or idx is set as a Get parameter
+    """
     prod = get_object_or_404(Production, pk=prod_id)
     
     idx = request.GET.get('idx')
