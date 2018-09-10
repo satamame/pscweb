@@ -7,10 +7,11 @@
 <h1>Team status</h1>
 <h2>{{ rhplan }}</h2>
 <table>
+    <tr><th>Team</th><th colspan="2">OK</th><th>Others</th></tr>
     {% for item in table_data %}
         <tr>
             <td nowrap><a href="{% url 'gs_schdl:team' prod_id=production.id team_id=item.id %}">{{ item.name }}</a></td>
-            <td>{{ item.ok_cnt}}</td><td>{{ item.other_st }}</td>
+            <td>{{ item.ok_cnt }}</td><td>{{ item.ok_st}}</td><td>{{ item.other_st }}</td>
         </tr>
     {% endfor %}
 </table>

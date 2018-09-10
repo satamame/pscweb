@@ -220,6 +220,9 @@ def team(request, prod_id, team_id):
 
 
 def rh_teams(request, rhplan_id):
+    """
+    View for team status per rehearsal (on a particular datetime)
+    """
     rhplan = get_object_or_404(RhPlan, pk=rhplan_id)
     teams = Team.objects.filter(prod_id=rhplan.prod_id.id)
     members = Member.objects.filter(prod_id=rhplan.prod_id.id)
@@ -251,10 +254,12 @@ def rh_teams(request, rhplan_id):
         mb_ids = [m.id for m in team.members.all()]
         
         ok_cnt = 0
+        ok_st = []
         other_st = []
         for mb_st in [s for s in mb_status if s['id'] in mb_ids]:
             if mb_st['status'] in ['○', '◯']:
                 ok_cnt += 1
+                ok_st.append(mb_st['name'][:2])
             else:
                 other_st.append(
                     mb_st['name'][:2] + '(' + mb_st['status'] + ')'
@@ -264,6 +269,7 @@ def rh_teams(request, rhplan_id):
             'id': team.id,
             'name': team.name,
             'ok_cnt': '{0}/{1}'.format(ok_cnt, len(mb_ids)),
+            'ok_st': ', '.join(ok_st),
             'other_st': ', '.join(other_st)
         })
 
