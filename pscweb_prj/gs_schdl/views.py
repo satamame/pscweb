@@ -43,9 +43,9 @@ class TeamListView(generic.ListView):
         mbid = self.request.GET.get('mbid')
 
         if mbid:
-            queryset = Team.objects.filter(prod_id=prod_id, members=mbid)
+            queryset = Team.objects.filter(prod_id=prod_id, members=mbid).order_by('name')
         else:
-            queryset = Team.objects.filter(prod_id=prod_id)
+            queryset = Team.objects.filter(prod_id=prod_id).order_by('name')
 
         return queryset
     
@@ -240,7 +240,7 @@ def rh_teams(request, rhplan_id):
     View for team status per rehearsal (on a particular datetime)
     """
     rhplan = get_object_or_404(RhPlan, pk=rhplan_id)
-    teams = Team.objects.filter(prod_id=rhplan.prod_id.id)
+    teams = Team.objects.filter(prod_id=rhplan.prod_id.id).order_by('name')
     members = Member.objects.filter(prod_id=rhplan.prod_id.id)
 
     values = get_sheet_values(rhplan.prod_id.gs_id, 'Sheet1')
