@@ -52,6 +52,15 @@ class TeamListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['production'] = Production.objects.get(pk=self.kwargs['prod_id'])
+        
+        mbid = self.request.GET.get('mbid')
+        if mbid:
+            member = Member.objects.get(pk=int(mbid))
+            if member:
+                context['member'] = member
+            else:
+                context['member'] = None
+
         return context
 
 

@@ -10,6 +10,9 @@
 
 {% block content %}
 <h1>Teams</h1>
+{% if member %}
+<h2>{{ member.name }}</h2>
+{% endif %}
 <ul>
     {% for item in object_list %}
         <li><a href="{% url 'gs_schdl:team' prod_id=production.id team_id=item.id %}">{{ item }}</a></li>
