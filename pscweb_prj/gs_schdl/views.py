@@ -249,10 +249,21 @@ def rh_teams(request, rhplan_id):
     View for team status per rehearsal (on a particular datetime)
     """
     rhplan = get_object_or_404(RhPlan, pk=rhplan_id)
-    teams = Team.objects.filter(prod_id=rhplan.prod_id.id).order_by('name')
-    members = Member.objects.filter(prod_id=rhplan.prod_id.id)
+    prod=rhplan.prod_id
 
-    values = get_sheet_values(rhplan.prod_id.gs_id, 'Sheet1')
+    # Determine member id to filter teams
+    try:
+        mbid = int(request.GET.get('mbid'))
+    except:
+        mbid = -1
+    if mbid >= 0:
+        teams = Team.objects.filter(prod_id=prod.id, members=mbid).order_by('name')
+    else:
+        teams = Team.objects.filter(prod_id=prod.id).order_by('name')
+
+    # Get member list and sheet values
+    members = Member.objects.filter(prod_id=prod.id)
+    values = get_sheet_values(prod.gs_id, 'Sheet1')
 
     # Datetime strings from row 1 and row 2
     dt_row = [x + r'\\' + y for (x, y) in zip(values[0], values[1])]
@@ -302,6 +313,8 @@ def rh_teams(request, rhplan_id):
         'production': rhplan.prod_id,
         'rhplan': rhplan,
         'table_data': table_data,
+        'members': members,
+        'mbid': mbid,
     }
     return render(request, 'gs_schdl/rh_teams.html', context)
 

@@ -21,7 +21,7 @@ urlpatterns = [
     
     # ex: /gs_schdl/1/rh_list/
     path('<int:prod_id>/rh_list/', views.RhListView.as_view(), name='rh_list'), # Rehearsal list
-    # ex: /gs_schdl/rh_tm/1/
+    # ex: /gs_schdl/rh_tm/1/[?mbid=1]
     path('rh_tm/<int:rhplan_id>/', views.rh_teams, name='rh_teams'), # Team table per Rehearsal
 
     # ex: /gs_schdl/rp/1/
@@ -30,6 +30,5 @@ urlpatterns = [
     path('rp/<int:rhplan_id>/edit/', views.rp_edit, name='rp_edit'), # Rehearsal Plan Edit
     # ex: /gs_schdl/1/rp_list/
     path('<int:prod_id>/rp_list/', views.RhPlanListView.as_view(), name='rp_list'), # Rehearsal Plan list
-    
 
 ]

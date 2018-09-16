@@ -6,6 +6,19 @@
 {% block content %}
 <h1>Team status</h1>
 <h2>{{ rhplan }}</h2>
+<form method="GET" action="{% url 'gs_schdl:rh_teams' rhplan.id %}">
+    <select name="mbid">
+        <option value="">All</option>
+        {% for member in members %}
+            <option value="{{ member.id }}"
+            {% if mbid == member.id %}
+            selected
+            {% endif %}
+            >{{ member.name }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Filter"/>
+</form>
 <table>
     <tr><th>Team</th><th colspan="2">OK</th><th>Others</th></tr>
     {% for item in table_data %}
