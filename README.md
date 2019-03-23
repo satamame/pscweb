@@ -7,4 +7,4 @@
     - The schedule data is dynamically read from Google spreadsheet (as the master data) and the basic definitions (team members, rehearsal date) are on the model DB.
 
 ## Python environment
-- You can __pip install -r env.txt__ in virtual env.
+- You can `pipenv install` (or `pipenv sync`) to create a virtual env.

@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+cachetools = "*"
+google-api-python-client = "*"
+google-auth = "*"
+google-auth-httplib2 = "*"
+httplib2 = "*"
+mysqlclient = "*"
+oauth2client = "*"
+pyasn1 = "*"
+pyasn1-modules = "*"
+pytz = "*"
+rsa = "*"
+six = "*"
+uritemplate = "*"
+Django = "*"
+PyMySQL = "*"
+
+[requires]
+python_version = "3.6"
