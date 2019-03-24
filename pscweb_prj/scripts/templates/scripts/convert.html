@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Convert Scripts{% endblock %}
+{% block title %}Convert Script{% endblock %}
 
 {% block breadcrumbs %}
 <ul display="inline">
@@ -11,5 +11,72 @@
 {% endblock %}
 
 {% block content %}
-<h1>Convert Scripts</h1>
+<h1>Convert Script</h1>
+
+<form>
+    <input type="file" accept="text/plain">
+    <input class="button" type="button" href="#" value="Convert" disabled="disabled"/>
+</form>
+
+<div class="preview"></div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+function escapeHtml(str){
+    str = str.replace(/&/g, '&amp;');
+    str = str.replace(/>/g, '&gt;');
+    str = str.replace(/</g, '&lt;');
+    str = str.replace(/"/g, '&quot;');
+    str = str.replace(/'/g, '&#x27;');
+    str = str.replace(/`/g, '&#x60;');
+    str = str.replace(/ /g, '&nbsp;');
+    str = str.replace(/\t/g, '&nbsp&nbsp&nbsp&nbsp;');
+    return str;
+}
+
+function updatePreview(text){
+    var $preview = document.querySelector(".preview");
+    
+    // Make it empty
+    while($preview.firstChild){
+        $preview.removeChild($preview.firstChild);
+    }
+
+    var $table = document.createElement("table");
+    var lines = text.split(/\r\n|\n/);
+
+    // Add rows to table
+    for (var i = 0; i < lines.length; i++){
+        var $row = document.createElement("tr");
+        var $cell_1 = document.createElement("td");
+        $cell_1.innerHTML = "<tt>" + (i + 1) + "</tt>";
+        $cell_1.style = "text-align:right; color:blue;";
+        var $cell_2 = document.createElement("td");
+        $cell_2.innerHTML = escapeHtml(lines[i]);
+
+        $table.appendChild($row);
+        $row.appendChild($cell_1);
+        $row.appendChild($cell_2);
+    }
+
+    // Add table to div
+    $preview.appendChild($table);
+    
+    // Activate the "Convert" button
+    document.querySelector('input[type="button"]').removeAttribute("disabled");
+}
+
+// Invoked when a file is specified.
+document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    var reader = new FileReader()
+
+    reader.onload = (function(event){
+        updatePreview(event.target.result);
+    });
+
+    reader.readAsText(file);
+});
+</script>
 {% endblock %}

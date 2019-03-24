@@ -17,8 +17,13 @@ from .forms import SignUpForm
 User = get_user_model()
 
 
-@login_required
+# @login_required
 def profile(request):
+
+    # Temporary
+    if request.user.is_authenticated == False:
+        return redirect('scripts:sc_index')
+
     context = {
         'user': request.user,
     }
