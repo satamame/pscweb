@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
+    'scripts.apps.ScriptsConfig',
     'gs_schdl.apps.GsSchdlConfig',
     'django.contrib.admin',
     'django.contrib.auth',

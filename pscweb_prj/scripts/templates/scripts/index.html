@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Scripts{% endblock %}
+
+{% block breadcrumbs %}
+<ul display="inline">
+    <li><a href="{% url 'root' %}">Top</a></li>
+    <li><a href="{% url 'scripts:sc_index' %}">Scripts</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<h1>Scripts</h1>
+<button class="button" onclick="location.href='{% url 'scripts:sc_convert' %}'">コンバート</button>
+{% endblock %}

@@ -24,6 +24,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     # 上の include については、「Djangoの認証システムを使用する」参照
     # https://docs.djangoproject.com/ja/2.0/topics/auth/default/
+    path('scripts/', include('scripts.urls')),
     path('gs_schdl/', include('gs_schdl.urls')),
     path('admin/', admin.site.urls),
 ]
