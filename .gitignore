@@ -2,3 +2,5 @@ __pycache__
 *.lnk
 /.venv/
 /memo/
+.vscode/
+/pscweb_prj/pscweb_prj/local_settings.py

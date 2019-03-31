@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'tu&pxo*)$k999)674ew=fi+)g9--%dpu6px3i0s&k!ywi6zc$w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -133,3 +133,15 @@ STATICFILES_DIRS = [
 
 # メールをコンソールに表示する
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# ローカル設定があれば開発環境、なければ本番環境
+DEBUG = False
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
+
+if not DEBUG:
+    import django_heroku
+    django_heroku.settings(locals())
