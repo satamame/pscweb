@@ -1,1 +1,1 @@
-web: gunicorn pscweb_prj/pscweb_prj.wsgi --log-file -
+web: gunicorn pscweb_prj.wsgi --log-file -

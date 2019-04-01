@@ -3,4 +3,4 @@ __pycache__
 /.venv/
 /memo/
 .vscode/
-/pscweb_prj/pscweb_prj/local_settings.py
+/pscweb_prj/local_settings.py
