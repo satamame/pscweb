@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Labeling script lines{% endblock %}
+
+{% block breadcrumbs %}
+<ul display="inline">
+    <li><a href="{% url 'root' %}">Top</a></li>
+    <li><a href="{% url 'scripts:sc_index' %}">Scripts</a></li>
+    <li><a href="{% url 'scripts:sc_label' %}">Labeling</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<h1>Labeling Script lines</h1>
+<table>
+    {% for line in lines %}
+    <tr>
+        <td>{{ line }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

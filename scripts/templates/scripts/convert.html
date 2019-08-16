@@ -13,9 +13,10 @@
 {% block content %}
 <h1>Convert Script</h1>
 
-<form>
-    <input type="file" accept="text/plain">
-    <input class="button" type="button" href="#" value="Convert" disabled="disabled"/>
+<form action="{% url 'scripts:sc_label' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="file" accept="text/plain">
+    <input class="button" type="submit" href="#" value="Convert" disabled="disabled"/>
 </form>
 
 <div class="preview"></div>
@@ -64,7 +65,7 @@ function updatePreview(text){
     $preview.appendChild($table);
     
     // Activate the "Convert" button
-    document.querySelector('input[type="button"]').removeAttribute("disabled");
+    document.querySelector('input[type="submit"]').removeAttribute("disabled");
 }
 
 // Invoked when a file is specified.
